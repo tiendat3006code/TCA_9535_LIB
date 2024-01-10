@@ -1,0 +1,11 @@
+TCA9535			KEYWORD1
+multi_tca_9535		KEYWORD2
+
+pinMode			KEYWORD2
+digitalWrite		KEYWORD2	
+begin_I2C		KEYWORD2
+end_I2C			KEYWORD2
+scanI2CAddress		KEYWORD2
+TCA_Init		KEYWORD2
+digitalWriteBoard	KEYWORD2
+digitalWriteAllBoard	KEYWORD2

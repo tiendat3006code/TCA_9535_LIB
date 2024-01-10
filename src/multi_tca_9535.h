@@ -11,6 +11,8 @@
  *  Lowest port must be connect to the board with the lowest address.
  */
 
+#if defined(ESP32)
+
 #ifndef MULTI_TCA_9535_H
 #define MULTI_TCA_9535_H
 
@@ -27,7 +29,7 @@ class multi_tca_9535 {
    ~multi_tca_9535();
    bool scanI2CAddress();
 
-  //* I2C begin with clock = 50 by default
+   //* I2C begin with clock = 50 by default
    void TCA_Init(bool isbegin_I2C = true);
 
    //! begin_I2C() use Wire.begin() and setClock(50)
@@ -49,3 +51,5 @@ class multi_tca_9535 {
 };
 
 #endif  // MULTI_TCA_9535_H
+
+#endif  // ESP32

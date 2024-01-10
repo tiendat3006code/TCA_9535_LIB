@@ -9,7 +9,9 @@
  *  This IC use I2C communnicate to read, write, set polarity to 16 ports.
  */
 
-#include "../include/tca_9535.h"
+#if defined(ESP32)
+
+#include "tca_9535.h"
 
 TCA9535::TCA9535(uint8_t address, TwoWire* wire) {
    _address = address;
@@ -277,3 +279,5 @@ void TCA9535::digitalWrite(bool state) {
       sendData(OUTPUT_PORT_1, 0xFF);
    }
 }
+
+#endif  // ESP32

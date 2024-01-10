@@ -11,7 +11,9 @@
  *  Lowest port must be connect to the board with the lowest address.
  */
 
-#include "../include/multi_tca_9535.h"
+#if defined(ESP32)
+
+#include "multi_tca_9535.h"
 
 multi_tca_9535::multi_tca_9535() {
    _boardCount = BOARDS_COUNT;
@@ -93,8 +95,10 @@ void multi_tca_9535::digitalWriteBoard(int board, bool state) {
    boards.at(board)->digitalWrite(state);
 }
 
-void multi_tca_9535::digitalWriteAllBoard(bool state){
-   for(TCA9535 * tca : boards){
+void multi_tca_9535::digitalWriteAllBoard(bool state) {
+   for (TCA9535* tca : boards) {
       tca->digitalWrite(state);
    }
 }
+
+#endif  // ESP32

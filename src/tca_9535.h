@@ -9,6 +9,8 @@
  *  This IC use I2C communnicate to read, write, set polarity to 16 ports.
  */
 
+#if defined(ESP32)
+
 #ifndef TCA9535_H
 #define TCA9535_H
 
@@ -78,3 +80,5 @@ class TCA9535 {
 };
 
 #endif  // TCA9535_H
+
+#endif  // ESP32
