@@ -15,8 +15,8 @@
 
 #include "multi_tca_9535.h"
 
-multi_tca_9535::multi_tca_9535() {
-   _boardCount = BOARDS_COUNT;
+multi_tca_9535::multi_tca_9535(uint8_t numberOfBoards) {
+   _boardCount = numberOfBoards;
 }
 
 void multi_tca_9535::TCA_Init(bool isbegin_I2C) {
@@ -26,7 +26,7 @@ void multi_tca_9535::TCA_Init(bool isbegin_I2C) {
    delay(1000);
    if (!scanI2CAddress())
       return;
-   for (int i = 0; i < BOARDS_COUNT; i++) {
+   for (int i = 0; i < _boardCount; i++) {
       TCA9535* tca = new TCA9535(boardsAddress.at(i));
       boards.push_back(tca);
    }

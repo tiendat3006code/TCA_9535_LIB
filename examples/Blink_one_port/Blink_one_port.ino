@@ -1,7 +1,7 @@
 #include <tca_9535.h>
 #include <multi_tca_9535.h>
 
-multi_tca_9535 tca;
+multi_tca_9535 tca(2);
 int port = 16;
 
 void setup() {

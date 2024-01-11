@@ -25,7 +25,7 @@ class multi_tca_9535 {
    uint8_t _boardCount;
 
   public:
-   multi_tca_9535();
+   multi_tca_9535(uint8_t numberOfBoards);
    ~multi_tca_9535();
    bool scanI2CAddress();
 

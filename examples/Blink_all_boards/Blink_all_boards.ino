@@ -1,7 +1,8 @@
 #include <tca_9535.h>
 #include <multi_tca_9535.h>
 
-multi_tca_9535 tca;
+//Number of boards
+multi_tca_9535 tca(2);
 
 void setup() {
   // put your setup code here, to run once:

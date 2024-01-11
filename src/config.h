@@ -15,7 +15,6 @@
 // TCA9535 ADDRESS & BOARDS COUNT
 #define TCA_MIN_ADDRESS           0x20
 #define TCA_MAX_ADDRESS           0x27
-#define BOARDS_COUNT              2
 
 //* COMMAND BYTES
 #define INPUT_PORT_0              0x00
