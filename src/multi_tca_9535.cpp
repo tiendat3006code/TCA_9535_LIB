@@ -101,4 +101,26 @@ void multi_tca_9535::digitalWriteAllBoard(bool state) {
    }
 }
 
+void multi_tca_9535::digitalWrite(uint8_t board, uint8_t port, bool state) {
+   boards.at(board)->digitalWrite(port, state);
+}
+
+void multi_tca_9535::pinMode(uint8_t board, vector<int>& ports, bool mode) {
+   for (int port : ports) {
+      if ((port < 0) || (port > 15))
+         return;
+   }
+   boards.at(board)->pinMode(ports, mode);
+}
+
+void multi_tca_9535::digitalWrite(uint8_t board,
+                                  vector<int>& ports,
+                                  bool state) {
+   for (int port : ports) {
+      if ((port < 0) || (port > 15))
+         return;
+   }
+   boards.at(board)->digitalWrite(ports, state);
+}
+
 #endif  // ESP32

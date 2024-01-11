@@ -48,6 +48,15 @@ class multi_tca_9535 {
 
    //* Set state for all ports
    void digitalWriteAllBoard(bool state);
+
+   //* Set a state for a specific port on a specific board
+   void digitalWrite(uint8_t board, uint8_t port, bool state);
+
+   //* Config mode many ports on a specific board
+   void pinMode(uint8_t board, vector<int>& ports, bool mode);
+
+   //* Set state for many ports on a specific board
+   void digitalWrite(uint8_t board, vector<int>& ports, bool state);
 };
 
 #endif  // MULTI_TCA_9535_H
