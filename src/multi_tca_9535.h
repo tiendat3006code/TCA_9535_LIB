@@ -20,9 +20,9 @@
 
 class multi_tca_9535 {
   private:
+   uint8_t _boardCount;
    vector<TCA9535*> boards;
    vector<uint8_t> boardsAddress;
-   uint8_t _boardCount;
 
   public:
    multi_tca_9535(uint8_t numberOfBoards);
