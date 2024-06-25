@@ -1,8 +1,8 @@
 #include <tca_9535.h>
 #include <multi_tca_9535.h>
 
-multi_tca_9535 tca(2);
-int port = 16;
+multi_tca_9535 tca(1);
+int port = 1;
 
 void setup() {
   // put your setup code here, to run once:

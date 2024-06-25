@@ -44,9 +44,6 @@
 #define TCA_P16                   14
 #define TCA_P17                   15
 
-// DEBUG_MODE
-#define DEBUG_MODE                false
-
 // BAUDRATE
 #define BAUDRATE                  115200
 

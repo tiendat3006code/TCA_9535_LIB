@@ -1,8 +1,8 @@
 /*
  *  @author:            Cao Tien Dat
  *  @board designer:    Nguyen Minh Duc
- *  @time:              10/1/2024
- *  @version:           v1.1
+ *  @time:              25/6/2024
+ *  @version:           v2.1
  *  @purpose: Arduino library for t302_workshop TCA9535 board.
  *  Header file for TCA_9535 IC.
  *  Run on PlatformIo and Arduino IDE.
@@ -79,9 +79,13 @@ void multi_tca_9535::end_I2C() {
    Wire.end();
 }
 
-void multi_tca_9535::pinMode(bool mode) {
-   for (TCA9535* tca : boards) {
-      tca->pinMode(mode);
+void multi_tca_9535::pinMode(bool mode, bool type, uint8_t board) {
+   if (type) {
+      for (TCA9535* tca : boards) {
+         tca->pinMode(mode);
+      }
+   } else {
+      boards.at(board)->pinMode(mode);
    }
 }
 
@@ -121,6 +125,34 @@ void multi_tca_9535::digitalWrite(uint8_t board,
          return;
    }
    boards.at(board)->digitalWrite(ports, state);
+}
+
+int multi_tca_9535::digitalRead(int port) {
+   int boardNumber = port / 16;
+   int portOnBoard = port % 16;
+   return boards.at(boardNumber)->digitalRead(portOnBoard);
+}
+
+vector<uint8_t> multi_tca_9535::digitalReadBoard(uint8_t board) {
+   vector<uint8_t> portState;
+   for (uint8_t state : boards.at(board)->digitalRead()) {
+      if (board == 1)
+         portState.push_back(state);
+      else {
+         portState.push_back(state + 16 * (board - 2));
+      }
+   }
+   return portState;
+}
+
+vector<uint8_t> multi_tca_9535::digitalReadAllBoards() {
+   vector<uint8_t> portStates;
+   for (int i = 1; i <= boards.size(); i++) {
+      for (uint8_t state : boards.at(i)->digitalRead()) {
+         portStates.push_back(i * state);
+      }
+   }
+   return portStates;
 }
 
 #endif  // ESP32

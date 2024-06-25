@@ -1,8 +1,8 @@
 /*
  *  @author:            Cao Tien Dat
  *  @board designer:    Nguyen Minh Duc
- *  @time:              10/1/2024
- *  @version:           v1.1
+ *  @time:              25/6/2024
+ *  @version:           v2.1
  *  @purpose: Arduino library for t302_workshop TCA9535 board.
  *  Header file for TCA_9535 IC.
  *  Run on PlatformIo and Arduino IDE.
@@ -38,13 +38,22 @@ class multi_tca_9535 {
    void end_I2C();
 
    //* Config all boards at the same mode.
-   void pinMode(bool mode);
+   void pinMode(bool mode, bool type = true, uint8_t board = 0);
 
    //* Set a specific state for a port
    void digitalWrite(int port, bool state);
 
+   //* Read a specific port
+   int digitalRead(int port);
+
    //* Set state for all ports int a specific board
    void digitalWriteBoard(int board, bool state);
+
+   //* Read a specific board
+   vector<uint8_t> digitalReadBoard(uint8_t board);
+
+   //* Read all board
+   vector<uint8_t> digitalReadAllBoards();
 
    //* Set state for all ports
    void digitalWriteAllBoard(bool state);

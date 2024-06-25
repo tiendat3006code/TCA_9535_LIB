@@ -1,8 +1,8 @@
 /*
  *  @author:            Cao Tien Dat
  *  @board designer:    Nguyen Minh Duc
- *  @time:              10/1/2024
- *  @version:           v1.1
+ *  @time:              25/6/2024
+ *  @version:           v2.1
  *  @purpose: Arduino library for t302_workshop TCA9535 board.
  *  Source file for tca_9535.h.
  *  Run on PlatformIo and Arduino IDE.
@@ -21,9 +21,6 @@ TCA9535::TCA9535(uint8_t address, TwoWire* wire) {
 TCA9535::~TCA9535() {}
 
 void TCA9535::begin_I2C() {
-#if DEBUG_MODE
-   Serial.println("Begin I2C transmission and TCA9535");
-#endif
    Wire.begin();
    Wire.setClock(50);
 }
@@ -34,9 +31,6 @@ void TCA9535::end_I2C() {
 
 void TCA9535::pinMode(uint8_t port, bool mode) {
    if (port > 15 || port < 0) {
-#if DEBUG_MODE
-      Serial.println("PIN error");
-#endif
       _status = TCA9535_PORT_ERROR;
       return;
    }
@@ -56,7 +50,6 @@ void TCA9535::pinMode(uint8_t port, bool mode) {
       statePort = 254 << port;
    }
    sendData(_mode, statePort);
-   _status = TCA9535_OK;
 }
 
 void TCA9535::sendData(uint8_t byte, uint8_t byte_) {
@@ -65,101 +58,32 @@ void TCA9535::sendData(uint8_t byte, uint8_t byte_) {
    _wire->write(byte_);
    int state = _wire->endTransmission();
    if (state != 0) {
-      switch (state) {
-         case 1:
-#if DEBUG_MODE
-            Serial.println("Data too long to fit in transmit buffer.");
-#endif
-            _status = TCA9535_I2C_ERROR;
-            break;
-         case 2:
-#if DEBUG_MODE
-            Serial.println("Received NACK on transmit of address.");
-#endif
-            _status = TCA9535_I2C_ERROR;
-            break;
-         case 3:
-#if DEBUG_MODE
-            Serial.println("Received NACK on transmit of data.");
-#endif
-            _status = TCA9535_I2C_ERROR;
-            break;
-         case 4:
-#if DEBUG_MODE
-            Serial.println("Other error.");
-#endif
-            _status = TCA9535_I2C_ERROR;
-            break;
-         case 5:
-#if DEBUG_MODE
-            Serial.println("Timeout");
-#endif
-            _status = TCA9535_I2C_ERROR;
-            break;
-      }
+      _status = TCA9535_I2C_ERROR;
       return;
    }
-#if DEBUG_MODE
-   Serial.println("Correct in sendData");
-#endif
    _status = TCA9535_OK;
 }
 
-uint8_t TCA9535::readRegister(uint8_t byte) {
+uint8_t TCA9535::readRegister(uint8_t byte, bool mode) {
    _wire->beginTransmission(_address);
    _wire->write(byte);
    uint16_t state = _wire->endTransmission();
    if (state != 0) {
-      switch (state) {
-         case 1:
-#if DEBUG_MODE
-            Serial.println("Data too long to fit in transmit buffer.");
-#endif
-            _status = TCA9535_I2C_ERROR;
-            break;
-         case 2:
-#if DEBUG_MODE
-            Serial.println("Received NACK on transmit of address.");
-#endif
-            _status = TCA9535_I2C_ERROR;
-            break;
-         case 3:
-#if DEBUG_MODE
-            Serial.println("Received NACK on transmit of data.");
-#endif
-            _status = TCA9535_I2C_ERROR;
-            break;
-         case 4:
-#if DEBUG_MODE
-            Serial.println("Other error.");
-#endif
-            _status = TCA9535_I2C_ERROR;
-            break;
-         case 5:
-#if DEBUG_MODE
-            Serial.println("Timeout");
-#endif
-            _status = TCA9535_I2C_ERROR;
-            break;
-      }
+      _status = TCA9535_I2C_ERROR;
+      return state;
    }
-#if DEBUG_MODE
-   Serial.println("Correct in readRegister");
-#endif
-   _wire->requestFrom(_address, static_cast<uint8_t>(1));
-#if DEBUG_MODE
-   Serial.print("Data receive: ");
-   Serial.println(_wire->read(), HEX);
-#endif
-   _status = TCA9535_OK;
-   return state;
+   if (mode == WRITE) {
+      _status = TCA9535_OK;
+      return state;
+   } else {
+      _wire->requestFrom(_address, static_cast<uint8_t>(1));
+      _status = TCA9535_OK;
+      return _wire->read();
+   }
 }
 
 void TCA9535::digitalWrite(uint8_t port, bool state) {
    if (port > 15 || port < 0) {
-#if DEBUG_MODE
-      Serial.println("PIN error");
-#endif
       _status = TCA9535_PORT_ERROR;
       return;
    }
@@ -179,7 +103,29 @@ void TCA9535::digitalWrite(uint8_t port, bool state) {
       statePort = 0xFF;
    }
    sendData(_mode, statePort);
-   _status = TCA9535_OK;
+}
+
+int TCA9535::digitalRead(uint8_t port) {
+   if (port > 15 || port < 0) {
+      _status = TCA9535_PORT_ERROR;
+      return -1;
+   }
+   if (port < 8) {
+      _mode = INPUT_PORT_0;
+   }
+   if ((port > 7)) {
+      port -= 8;
+      _mode = INPUT_PORT_1;
+   }
+   uint8_t statePort = readRegister(_mode, READ);
+   if (_status == TCA9535_I2C_ERROR) {
+      return -1;
+   }
+   uint8_t mask = (0x01 << port);
+   if (statePort & mask)
+      return ON;
+   else
+      return OFF;
 }
 
 void TCA9535::pinMode(vector<int>& ports, bool mode) {
@@ -212,12 +158,6 @@ void TCA9535::pinMode(vector<int>& ports, bool mode) {
          sendData(_mode, dataToSend_1);
       }
    }
-#if DEBUG_MODE
-   Serial.print("Data to send port_0: ");
-   Serial.println(dataToSend_0, BIN);
-   Serial.print("Data to send port_1: ");
-   Serial.println(dataToSend_1, BIN);
-#endif
 }
 
 void TCA9535::digitalWrite(vector<int>& ports, bool state) {
@@ -250,12 +190,6 @@ void TCA9535::digitalWrite(vector<int>& ports, bool state) {
          sendData(_mode, 0xFF);
       }
    }
-#if DEBUG_MODE
-   Serial.print("Data to send port_0: ");
-   Serial.println(dataToSend_0, BIN);
-   Serial.print("Data to send port_1: ");
-   Serial.println(dataToSend_1, BIN);
-#endif
 }
 
 void TCA9535::pinMode(bool mode) {
@@ -278,6 +212,32 @@ void TCA9535::digitalWrite(bool state) {
       sendData(OUTPUT_PORT_0, 0xFF);
       sendData(OUTPUT_PORT_1, 0xFF);
    }
+}
+
+vector<uint8_t> TCA9535::digitalRead() {
+   vector<uint8_t> openPort;
+   uint8_t statePort_0 = readRegister(INPUT_PORT_0, READ);
+   if (_status == TCA9535_I2C_ERROR) {
+      return openPort;
+   }
+   Serial.println(statePort_0, BIN);
+   for (int i = 0; i < 8; i++) {
+      if ((statePort_0 >> i) & 0x01) {
+         openPort.push_back(i);
+      }
+   }
+
+   uint8_t statePort_1 = readRegister(INPUT_PORT_1, READ);
+   if (_status == TCA9535_I2C_ERROR) {
+      return openPort;
+   }
+   Serial.println(statePort_1, BIN);
+   for (int i = 8; i < 16; i++) {
+      if ((statePort_1 >> (i - 8)) & 0x01) {
+         openPort.push_back(i);
+      }
+   }
+   return openPort;
 }
 
 #endif  // ESP32

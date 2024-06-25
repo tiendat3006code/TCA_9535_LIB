@@ -39,7 +39,7 @@ class TCA9535 {
 
    // myFunction
    void sendData(uint8_t byte, uint8_t byte_);
-   uint8_t readRegister(uint8_t byte);
+   uint8_t readRegister(uint8_t byte, bool mode = WRITE);
 
   public:
    TCA9535(uint8_t address, TwoWire* wire = &Wire);
@@ -57,6 +57,7 @@ class TCA9535 {
     */
    void pinMode(uint8_t port, bool mode);
    void digitalWrite(uint8_t port, bool state);
+   int digitalRead(uint8_t port);
    /*************************************************************/
 
    /*
@@ -77,6 +78,7 @@ class TCA9535 {
     */
    void pinMode(bool mode);
    void digitalWrite(bool state);
+   vector<uint8_t> digitalRead();
 };
 
 #endif  // TCA9535_H
