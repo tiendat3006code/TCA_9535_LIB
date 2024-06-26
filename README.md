@@ -16,7 +16,7 @@ digitalWrite(bool state): is for set all port in one state
  ```
  ___
 
-## FOR MUILTi TCA_9535 ONE MODE BOARDS
+## FOR MUILTI TCA_9535 ONE MODE BOARDS
 **Use muiti_tca_9535 library**
 > This Library will automatic start I2C 
 > Contructor require number of boards
@@ -29,7 +29,7 @@ digitalWriteAllBoards(): set state for all boards
 ```
 ___
 
-## FOR MUILTi TCA_9535 DOUBLE MODE BOARDS
+## FOR MUILTI TCA_9535 DOUBLE MODE BOARDS
 **Use double_tca_9535 library**
 > This library is similar to multi_tca_9535 library.
 > This board use two TCA_9535, one for read and one for write.
