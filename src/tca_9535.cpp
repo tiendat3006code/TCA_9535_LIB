@@ -121,6 +121,7 @@ int TCA9535::digitalRead(uint8_t port) {
    if (_status == TCA9535_I2C_ERROR) {
       return -1;
    }
+   statePort = ~statePort;
    uint8_t mask = (0x01 << port);
    if (statePort & mask)
       return ON;
@@ -220,7 +221,7 @@ vector<uint8_t> TCA9535::digitalRead() {
    if (_status == TCA9535_I2C_ERROR) {
       return openPort;
    }
-   Serial.println(statePort_0, BIN);
+   statePort_0 = ~statePort_0;
    for (int i = 0; i < 8; i++) {
       if ((statePort_0 >> i) & 0x01) {
          openPort.push_back(i);
@@ -231,7 +232,7 @@ vector<uint8_t> TCA9535::digitalRead() {
    if (_status == TCA9535_I2C_ERROR) {
       return openPort;
    }
-   Serial.println(statePort_1, BIN);
+   statePort_1 = ~statePort_1;
    for (int i = 8; i < 16; i++) {
       if ((statePort_1 >> (i - 8)) & 0x01) {
          openPort.push_back(i);
