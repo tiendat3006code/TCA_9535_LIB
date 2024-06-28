@@ -96,15 +96,14 @@ void double_mode_tca::digitalWrite(uint8_t board, uint8_t port, bool state) {
 }
 
 int double_mode_tca::digitalRead(int port) {
-   int boardNumber = port / 16;
-   boardNumber = boardNumber * 2 + 1;
+   int boardNumber = port / 16 * 2 + 1;
    int portOnBoard = port % 16;
    return boards[boardNumber]->digitalRead(portOnBoard);
 }
 
 vector<uint8_t> double_mode_tca::digitalReadBoard(uint8_t board) {
    vector<uint8_t> portState;
-   if ((board % 2 == 0))
+   if ((board % 2) == 0)
       return portState;
    for (uint8_t state : boards[board * 2 + 1]->digitalRead()) {
       portState.push_back(state + 16 * (board - 1) / 2);
