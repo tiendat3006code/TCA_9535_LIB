@@ -50,16 +50,21 @@ bool multi_tca_9535::scanI2CAddress() {
          boardsAddress.push_back(address);
       }
    }
-   if (boardsAddress.size() == _boardCount) {
+   numberOfBoardFound = boardsAddress.size();
+   if (numberOfBoardFound == _boardCount) {
       return true;
    } else {
       return false;
    }
 }
 
+uint8_t multi_tca_9535::getNumberOfBoardsFound() const{
+    return numberOfBoardFound;
+}
+
 void multi_tca_9535::begin_I2C() {
    Wire.begin();
-   Wire.setClock(50);
+   Wire.setClock(100000);
 }
 
 void multi_tca_9535::end_I2C() {

@@ -23,19 +23,23 @@ class multi_tca_9535 {
    uint8_t _boardCount;
    vector<TCA9535*> boards;
    vector<uint8_t> boardsAddress;
+   uint8_t numberOfBoardFound;
 
   public:
    multi_tca_9535(uint8_t numberOfBoards);
    ~multi_tca_9535();
    bool scanI2CAddress();
 
-   //* I2C begin with clock = 50 by default
+   //* I2C begin with clock = 100000 by default
    void TCA_Init(bool isbegin_I2C = true);
 
    //! begin_I2C() use Wire.begin() and setClock(50)
    void begin_I2C();
    //! end_I2C() use Wire.end()
    void end_I2C();
+
+   //! Return the actually number of boards found
+   uint8_t getNumberOfBoardsFound() const;
 
    //* Config all boards at the same mode.
    void pinMode(bool mode);
